@@ -41,7 +41,10 @@ let TodoList = GObject.registerClass(class TodoList extends PanelMenu.Button {
         this.meta = meta;
 
         // Tasks file
-        this.filePath = GLib.get_home_dir() + '/.list.tasks';
+        let shareDir = GLib.get_user_data_dir() + '/todolist-weirane';
+        if (!GLib.file_test(shareDir, GLib.FileTest.IS_DIR))
+            GLib.mkdir_with_parents(shareDir, 0o755);
+        this.filePath = shareDir + '/tasks';
 
         // Locale
         let locales = this.meta.path + '/locale';
