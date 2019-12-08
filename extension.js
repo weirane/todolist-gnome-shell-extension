@@ -94,8 +94,6 @@ let TodoList = GObject.registerClass(class TodoList extends PanelMenu.Button {
         entryNewTask.connect('key-press-event', Lang.bind(this, (o, e) => {
             let symbol = e.get_key_symbol();
             if (symbol == KEY_RETURN || symbol == KEY_ENTER) {
-                this.menu.close();
-                this.buttonText.set_text('');
                 addTask(o.get_text(), this.filePath);
                 entryNewTask.set_text('');
             }
@@ -118,18 +116,18 @@ let TodoList = GObject.registerClass(class TodoList extends PanelMenu.Button {
         let content = Shell.get_file_contents_utf8_sync(this.filePath);
         let lines = content.toString().split('\n');
         let tasks = 0;
-        for (let i = 0; i < lines.length; i++) {
-            if (lines[i] != '' && lines[i] != '\n') {
-                let item = new PopupMenu.PopupMenuItem(lines[i]);
-                let textClicked = lines[i];
-                item.connect('activate', Lang.bind(this, () => {
-                    this.menu.close();
-                    this.buttonText.set_text('');
-                    removeTask(textClicked, this.filePath);
-                }));
-                this.todosBox.add(item.actor);
-                tasks += 1;
+        for (let line of lines) {
+            if (line == '' || line == '\n') {
+                continue;
             }
+            let item = new PopupMenu.PopupMenuItem(line);
+            let textClicked = line;
+            item.connect('activate', Lang.bind(this, () => {
+                removeTask(textClicked, this.filePath);
+                this.newTask.grab_key_focus();
+            }));
+            this.todosBox.add(item.actor);
+            tasks += 1;
         }
 
         // Update status button
