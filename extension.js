@@ -208,8 +208,9 @@ function removeTask(text, file) {
 
 // Add task 'text' to file 'file'
 function addTask(text, file) {
+    text = text.trim();
     // Don't add empty task
-    if (text == '' || text == '\n') {
+    if (!text) {
         return;
     }
 
