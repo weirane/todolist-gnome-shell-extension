@@ -10,9 +10,6 @@ const Utils = imports.misc.extensionUtils.getCurrentExtension().imports.utils;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Extension = ExtensionUtils.getCurrentExtension();
 
-const Gettext = imports.gettext;
-const _ = Gettext.domain('todolist').gettext;
-
 const OPEN_TODOLIST_KEY = 'open-todolist';
 const COPY_TO_CLIPBOARD_KEY = 'clipboard';
 
@@ -20,12 +17,8 @@ function init() {}
 
 // Build prefs UI
 function buildPrefsWidget() {
-    // Read locale files
-    let locales = Extension.dir.get_path() + '/locale';
-    Gettext.bindtextdomain('todolist', locales);
-
-    let opentodolist_str = _('Open todolist');
-    let clipboard_str = _('Copy text of removed item to clipboard');
+    let opentodolist_str = 'Open todolist';
+    let clipboard_str = 'Copy text of removed item to clipboard';
 
     // Get settings
     let settings = Utils.getSettings();
@@ -82,7 +75,7 @@ function buildPrefsWidget() {
     treeview.set_headers_visible(false);
 
     shortcut_hbox.pack_start(
-        new Gtk.Label({label: _('Open todolist'), use_markup: true, xalign: 0}),
+        new Gtk.Label({label: 'Open todolist', use_markup: true, xalign: 0}),
         true, true, 0);
     shortcut_hbox.pack_end(treeview, false, true, 0);
 

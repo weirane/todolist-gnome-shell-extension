@@ -17,9 +17,6 @@ const Shell = imports.gi.Shell;
 const Meta = imports.gi.Meta;
 const GObject = imports.gi.GObject;
 
-const Gettext = imports.gettext;
-const _ = Gettext.domain('todolist').gettext;
-
 const Utils = imports.misc.extensionUtils.getCurrentExtension().imports.utils;
 const ExtensionSettings = Utils.getSettings();  // Get settings from utils.js
 
@@ -46,14 +43,10 @@ let TodoList = GObject.registerClass(class TodoList extends PanelMenu.Button {
             GLib.mkdir_with_parents(shareDir, 0o755);
         this.filePath = shareDir + '/tasks';
 
-        // Locale
-        let locales = this.meta.path + '/locale';
-        Gettext.bindtextdomain('todolist', locales);
-
         // Button ui
         this.mainBox = null;
-        this.buttonText = new St.Label(
-            {text: _('(...)'), y_align: Clutter.ActorAlign.CENTER});
+        this.buttonText =
+            new St.Label({text: '', y_align: Clutter.ActorAlign.CENTER});
         this.buttonText.set_style('text-align:center;');
         this.actor.add_actor(this.buttonText);
 
@@ -63,7 +56,9 @@ let TodoList = GObject.registerClass(class TodoList extends PanelMenu.Button {
 
     _buildUI() {
         // Destroy previous box
-        if (this.mainBox != null) this.mainBox.destroy();
+        if (this.mainBox != null) {
+            this.mainBox.destroy();
+        }
 
         // Create main box
         this.mainBox = new St.BoxLayout();
@@ -89,7 +84,7 @@ let TodoList = GObject.registerClass(class TodoList extends PanelMenu.Button {
         // Text entry
         this.newTask = new St.Entry({
             name: 'newTaskEntry',
-            hint_text: _('New task...'),
+            hint_text: 'New task...',
             track_hover: true,
             can_focus: true
         });
@@ -100,7 +95,7 @@ let TodoList = GObject.registerClass(class TodoList extends PanelMenu.Button {
             let symbol = e.get_key_symbol();
             if (symbol == KEY_RETURN || symbol == KEY_ENTER) {
                 this.menu.close();
-                this.buttonText.set_text(_('(...)'));
+                this.buttonText.set_text('');
                 addTask(o.get_text(), this.filePath);
                 entryNewTask.set_text('');
             }
@@ -129,7 +124,7 @@ let TodoList = GObject.registerClass(class TodoList extends PanelMenu.Button {
                 let textClicked = lines[i];
                 item.connect('activate', Lang.bind(this, () => {
                     this.menu.close();
-                    this.buttonText.set_text(_('(...)'));
+                    this.buttonText.set_text('');
                     removeTask(textClicked, this.filePath);
                 }));
                 this.todosBox.add(item.actor);
@@ -141,7 +136,7 @@ let TodoList = GObject.registerClass(class TodoList extends PanelMenu.Button {
         this.buttonText.set_text('ToDo (' + tasks + ')');
 
         // Restore hint text
-        this.newTask.hint_text = _('New task...');
+        this.newTask.hint_text = 'New task...';
     }
 
     _enable() {
@@ -167,9 +162,9 @@ let TodoList = GObject.registerClass(class TodoList extends PanelMenu.Button {
 // Utils
 // Called when 'open-todolist' is emitted (binded with Lang.bind)
 function signalKeyOpen() {
-    if (this.menu.isOpen)
+    if (this.menu.isOpen) {
         this.menu.close();
-    else {
+    } else {
         this.menu.open();
         this.newTask.grab_key_focus();
     }
@@ -185,7 +180,7 @@ function checkFile(file) {
 function removeTask(text, file) {
     // Check if file exists
     if (!GLib.file_test(file, GLib.FileTest.EXISTS)) {
-        global.logError('Todo list : Error with file : ' + file);
+        global.logError('Todo list: Error with file: ' + file);
         return;
     }
 
@@ -216,11 +211,13 @@ function removeTask(text, file) {
 // Add task 'text' to file 'file'
 function addTask(text, file) {
     // Don't add empty task
-    if (text == '' || text == '\n') return;
+    if (text == '' || text == '\n') {
+        return;
+    }
 
     // Check if file exists
     if (!GLib.file_test(file, GLib.FileTest.EXISTS)) {
-        global.logError('Todo list : Error with file : ' + file);
+        global.logError('Todo list: Error with file: ' + file);
         return;
     }
 
