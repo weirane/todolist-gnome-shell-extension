@@ -1,3 +1,7 @@
+ARCHIVED: I switched to i3 and [here][polybar-todo] is the ToDo gadget I use with polybar.
+
+[polybar-todo]: https://github.com/weirane/dotfiles/blob/1d8e238115873/dotconfig/polybar/scripts/todo-view.sh
+
 # todolist-gnome-shell-extension
 Simple todo list extension for gnome-shell
 
